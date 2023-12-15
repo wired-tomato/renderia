@@ -1,4 +1,4 @@
-use glam::{Mat4, Quat, Vec3};
+use glam::{Mat4, Quat, Vec3, vec3};
 use crate::rendering::rgl::ShaderProgram;
 use crate::rendering::rgl::UniformValue::UniformMatrix4F;
 
@@ -14,7 +14,9 @@ pub struct PerspectiveCamera {
 }
 
 impl PerspectiveCamera {
-    const UP: Vec3 = glam::vec3(0.0, 1.0, 0.0);
+    const RIGHT: Vec3 = vec3(1.0, 0.0, 0.0);
+    const UP: Vec3 = vec3(0.0, 1.0, 0.0);
+    const DIRECTION: Vec3 = vec3(0.0, 0.0, -1.0);
 
     pub fn new(pos: Vec3, rotation: Quat, fov: f32, width: f32, height: f32, near: f32, far: f32) -> PerspectiveCamera {
         let perspective = Mat4::perspective_rh_gl(fov.to_radians(), width / height, near, far);
@@ -46,19 +48,15 @@ impl PerspectiveCamera {
     }
 
     pub fn cam_direction(&self) -> Vec3 {
-        self.rotation * self.pos
-    }
-
-    pub fn cam_direction_opposite(&self) -> Vec3 {
-       (self.pos - (self.rotation * self.pos)).normalize()
+        (self.rotation * Self::DIRECTION).normalize()
     }
 
     pub fn cam_right(&self) -> Vec3 {
-        PerspectiveCamera::UP.clone().cross(self.cam_direction_opposite()).normalize()
+        (self.rotation * Self::RIGHT).normalize()
     }
 
     pub fn cam_up(&self) -> Vec3 {
-        self.cam_direction_opposite().cross(self.cam_right())
+        (self.rotation * Self::UP).normalize()
     }
 
     pub fn rotate(&mut self, rotation: Quat) {

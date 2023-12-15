@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Read;
 use std::{mem, ptr};
 use gl::types::*;
-use glam::*;
+use glam::{DMat2, DMat3, DMat4, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3, Mat4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec4};
 
 pub struct Vao {
     id: GLuint,
@@ -151,8 +151,6 @@ impl ShaderProgram {
         fragment_shader_file
             .read_to_string(&mut fragment_shader_source)
             .expect("Failed to read fragment shader");
-
-        println!("{vertex_shader_source}\n\n{fragment_shader_source}");
 
         unsafe {
             let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
